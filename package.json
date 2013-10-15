@@ -1,0 +1,32 @@
+{
+  "name": "masters",
+  "description": "Musical chairs style elimination tournaments",
+  "author": "Eirik Albrigtsen <analsandblaster@gmail.com>",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "clux/masters"
+  },
+  "keywords": [
+    "knockout",
+    "masters",
+    "elimination",
+    "repeat",
+    "master-chef"
+  ],
+  "main": "masters.js",
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "dependencies": {
+    "interlude": "~1.0.2",
+    "tournament": "~0.15.0"
+  },
+  "devDependencies": {
+    "tap": "~0.4.4"
+  },
+  "bugs": {
+    "url": "http://github.com/clux/masters/issues"
+  },
+  "license": "MIT"
+}
