@@ -78,39 +78,27 @@ KnockOut.prototype.unscorable = function (id, score, allowPast) {
 };
 
 KnockOut.prototype.score = function (id, score) {
-  // 0. error handling - if this fails client didnt guard so we log
-  var invReason = this.unscorable(id, score, true);
-  if (invReason !== null) {
-    console.error("failed scoring knockout %s with %j", idString(id), score);
-    console.error("reason:", invReason);
-    return false;
-  }
+  if (Base.prototype.score.call(this, id, score)) {
+    var ko = this.kos[id.r - 1] || 0;
+    if (ko) {
+      // if more matches to play -> progress the top not knocked out
+      var m = this.findMatch(id);
+      var adv = m.p.length - ko;
+      var top = $.zip(m.p, m.m).sort(Base.compareZip).slice(0, adv);
+      var nextM = this.findMatch({s: 1, r: m.id.r+1, m:1});
 
-  // 1. score match
-  var m = this.findMatch(id);
-  m.m = score;
-
-  // was it the final?
-  var ko = this.kos[id.r - 1] || 0;
-  if (!ko) {
+      if (!nextM || top.length !== adv) { // sanity
+        var str =  !nextM ?
+          "next match not found in tournament":
+          "less players than expected in round " + m.id.r+1;
+        throw new Error("tournament corrupt at " + idString(id) + ": " + str);
+      }
+      // progress
+      nextM.p = $.pluck('0', top);
+    }
     return true;
   }
-  // 2. progress the top not knocked out
-  var adv = m.p.length - ko;
-  var top = $.zip(m.p, m.m).sort(Base.compareZip).slice(0, adv);
-  var nextM = this.findMatch({s: 1, r: m.id.r+1, m:1});
-
-  if (!nextM) {
-    throw new Error("tournament corrupt - next match not found");
-  }
-  if (top.length !== adv) {
-    throw new Error("match corrupt - less players than expected in " + idString(id));
-  }
-
-  // progress
-  nextM.p = $.pluck('0', top);
-
-  return true;
+  return false;
 };
 
 // helper for results
