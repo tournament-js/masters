@@ -1,11 +1,6 @@
 var Base = require('tournament')
   , $ = require('interlude');
 
-// ko tournaments is one match per round only
-var idString = function (id) {
-  return "R" + id.r;
-};
-
 var invalid = function (np, kos) {
   if (!Number.isFinite(np) || Math.ceil(np) !== np || np < 3) {
     return "KnockOut must contain at least 3 players";
@@ -30,7 +25,7 @@ var invalid = function (np, kos) {
 };
 
 // requires only num players and array of knockout values for each round
-var knockout = function (np, kos) {
+var makeTournament = function (np, kos) {
   var invReason = invalid(np, kos);
   if (invReason !== null) {
     console.error("Invalid KnockOut configuration %dp kos=%j", np, kos);
@@ -49,21 +44,23 @@ var knockout = function (np, kos) {
 };
 
 // interface
-function KnockOut(numPlayers, koArray) {
-  if (!(this instanceof KnockOut)) {
-    return new KnockOut(numPlayers, koArray);
+function Masters(numPlayers, koArray) {
+  if (!(this instanceof Masters)) {
+    return new Masters(numPlayers, koArray);
   }
   this.version = 1;
   this.kos = koArray;
   this.numPlayers = numPlayers;
-  Base.call(this, KnockOut, knockout(numPlayers, koArray));
+  Base.call(this, Masters, makeTournament(numPlayers, koArray));
 }
-KnockOut.prototype = Object.create(Base.prototype);
-KnockOut.parse = Base.parse.bind(null, KnockOut);
-KnockOut.idString = idString;
-KnockOut.invalid = invalid;
+Masters.prototype = Object.create(Base.prototype);
+Masters.parse = Base.parse.bind(null, Masters);
+Masters.invalid = invalid;
+Masters.idString = function (id) {
+  return "R" + id.r; // always only one match per round
+};
 
-KnockOut.prototype.unscorable = function (id, score, allowPast) {
+Masters.prototype.unscorable = function (id, score, allowPast) {
   var invReason = Base.prototype.unscorable.call(this, id, score, allowPast);
   if (invReason !== null) {
     return invReason;
@@ -77,7 +74,7 @@ KnockOut.prototype.unscorable = function (id, score, allowPast) {
   return null;
 };
 
-KnockOut.prototype.score = function (id, score) {
+Masters.prototype.score = function (id, score) {
   if (Base.prototype.score.call(this, id, score)) {
     var ko = this.kos[id.r - 1] || 0;
     if (ko) {
@@ -85,13 +82,13 @@ KnockOut.prototype.score = function (id, score) {
       var m = this.findMatch(id);
       var adv = m.p.length - ko;
       var top = $.zip(m.p, m.m).sort(Base.compareZip).slice(0, adv);
-      var nextM = this.findMatch({s: 1, r: m.id.r+1, m:1});
+      var nextM = this.findMatch({s:1, r: m.id.r+1, m:1});
 
       if (!nextM || top.length !== adv) { // sanity
         var str =  !nextM ?
           "next match not found in tournament":
           "less players than expected in round " + m.id.r+1;
-        throw new Error("tournament corrupt at " + idString(id) + ": " + str);
+        throw new Error("corrupt " + Masters.idString(id) + ": " + str);
       }
       // progress
       nextM.p = $.pluck('0', top);
@@ -135,7 +132,7 @@ var positionTies = function (res, sortedPairSlice, startPos) {
 };
 
 
-KnockOut.prototype.results = function () {
+Masters.prototype.results = function () {
   var kos = this.kos;
   var ms = this.matches;
   var res = [];
@@ -195,8 +192,8 @@ KnockOut.prototype.results = function () {
 };
 
 // slightly more efficient than base Implementation
-KnockOut.prototype.isDone = function () {
+Masters.prototype.isDone = function () {
   return !!this.matches[this.matches.length-1].m;
 };
 
-module.exports = KnockOut;
+module.exports = Masters;
