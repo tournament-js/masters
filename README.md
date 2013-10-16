@@ -1,4 +1,4 @@
-# Knockout tournaments
+# Masters tournaments
 [![Build Status](https://secure.travis-ci.org/clux/masters.png)](http://travis-ci.org/clux/masters)
 [![Dependency Status](https://david-dm.org/clux/masters.png)](https://david-dm.org/clux/masters)
 
@@ -11,13 +11,20 @@ Knockout tournaments consist of a pool of players, repeatedly fighting against e
 Simply specify the number of players and an array of numbers to knock out per rounds. The resulting tournament will have the same number of matches as that array's length + 1.
 
 ```js
-var ko = new KnockOut(10, [3, 2, 2]);
+var ko = new Masters(10, [3, 2, 2]);
 ```
 
-This example will create a 10 player match in round 1, a 7 player match in round 2, a 5 player match in round 3, and a 3 player final.
+This example will create:
+
+- 10 player match in round 1
+- 7 player match in round 2
+- 5 player match in round 3
+- 3 player (final) match
 
 ## Limits
-TODO: simple, only adds a disambiguation clause for the final
+Limits adds a way to ensure we get the top `n` players from the final without having to do re-matches. Set the `limit`: `n` on the third options argument to the constructor to activate this.
+
+This will simly engage a disambiguation clause for the final match.
 
 ## Match Ids
 Like all tournament types, matches have an `id` object that contains three values all in `{1, 2, ...}`:
@@ -31,7 +38,7 @@ Like all tournament types, matches have an `id` object that contains three value
 ```
 
 ## Finding matches
-All the normal [Base class helper methods](./base.md#common-methods) exist on a `Duel` instance. That said, knockouts are so simple you can do this very simply anyway:
+All the normal [Base class helper methods](https://github.com/clux/tournament/doc/master/blob/base.md#common-methods) exist on a `Duel` instance. That said, knockouts are so simple you can do this very simply anyway:
 
 ```js
 var r1 = ko.findMatches({ r: 1 });
@@ -46,10 +53,10 @@ var matchesForSeed1 = ko.matchesFor(1);
 
 ## Scoring Matches
 Call `ko.hscore(id, [player0Score, player1Score, ...])` as for every match played.
-The `ko.unscorable(id, scoreArray)` will tell you whether the score is valid. Read the entry in the [tournament commonalities doc](./base.md#ensuring-scorability--consistency).
+The `ko.unscorable(id, scoreArray)` will tell you whether the score is valid. Read the entry in the [tournament commonalities doc](https://github.com/clux/tournament/doc/master/blob/base.md#common-methods#ensuring-scorability--consistency).
 
 ### NB: Ambiguity restriction
-KnockOuts allow for ties everywhere except between the first knocked out player and the last advancing player. In the final, ties are fully allowed, so multiple players can share the first place. Check for this if it's unsuited to your game/application.
+Masters allow for ties everywhere except between the first knocked out player and the last advancing player. In the final, ties are fully allowed, so multiple players can share the first place. Check for this if it's unsuited to your game/application.
 
 ## Special Methods
 None.
