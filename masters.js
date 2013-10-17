@@ -3,7 +3,7 @@ var Base = require('tournament')
 
 var invalid = function (np, kos) {
   if (!Number.isFinite(np) || Math.ceil(np) !== np || np < 3) {
-    return "KnockOut must contain at least 3 players";
+    return "Masters must contain at least 3 players";
   }
   if (!Array.isArray(kos)) {
     return "kos must be an array of integers";
@@ -28,7 +28,7 @@ var invalid = function (np, kos) {
 var makeTournament = function (np, kos) {
   var invReason = invalid(np, kos);
   if (invReason !== null) {
-    console.error("Invalid KnockOut configuration %dp kos=%j", np, kos);
+    console.error("Invalid Masters configuration %dp kos=%j", np, kos);
     console.error("reason: %s", invReason);
     return [];
   }
