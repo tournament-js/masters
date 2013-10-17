@@ -1,7 +1,6 @@
-var Base = require('tournament')
-  , Masters = require('./masters');
+var Masters = require('./masters');
 
-// only difference between Chairs and Masters is we always knock out ONE per round
+// Chairs always knocks out ONE per round (only diff with Masters)
 var makeKos = function (numPlayers) {
   var kos = [];
   for (var i = numPlayers; i > 2; i -= 1) {
@@ -10,15 +9,12 @@ var makeKos = function (numPlayers) {
   return kos;
 };
 
-function Chairs(numPlayers) {
-  if (!(this instanceof Chairs)) {
-    return new Chairs(numPlayers);
+var Chairs = Masters.sub('Chairs', ['numPlayers'], {
+  init: function (cb) {
+    cb(this.numPlayers, makeKos(this.numPlayers));
   }
-  Masters.call(this, numPlayers, makeKos(numPlayers));
-}
-Chairs.prototype = Object.create(Masters.prototype);
-Chairs.parse = Base.parse.bind(null, Chairs);
-Chairs.idString = Masters.idString;
+});
+
 Chairs.invalid = function (numPlayers) {
   return Masters.invalid(numPlayers, makeKos(numPlayers));
 };
