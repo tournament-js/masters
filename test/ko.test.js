@@ -1,16 +1,16 @@
 var tap = require('tap')
   , test = tap.test
   , $ = require('interlude')
-  , KnockOut = require('../')
-  , rep = KnockOut.idString;
+  , Masters = require('../')
+  , rep = Masters.idString;
 
 test("ko 10 [2,4,2] serialize", function (t) {
   var kos = [2,4,2];
-  t.ok(!KnockOut.invalid(10, kos), "10 kos not invalid");
-  var ko = new KnockOut(10, kos);
+  t.ok(!Masters.invalid(10, kos), "10 kos not invalid");
+  var ko = new Masters(10, kos);
 
   for (var i = 0; i < 4; i += 1) {
-    var konew = KnockOut.parse(ko + '');
+    var konew = Masters.parse(ko + '');
     t.deepEqual(ko.matches, konew.matches, "matches the same");
     t.deepEqual(ko.kos, konew.kos, "kos the same");
 
@@ -25,7 +25,7 @@ test("ko 10 [2,4,2] serialize", function (t) {
 // detailed simple knockout
 test("ko 10 [2,4,2]", function (t) {
   var kos = [2,4,2];
-  var ko = new KnockOut(10, kos)
+  var ko = new Masters(10, kos)
     , ms = ko.matches;
 
   t.equal(ms.length, kos.length + 1, "games required");
@@ -75,7 +75,7 @@ test("ko 10 [2,4,2]", function (t) {
 
 test("ko 10 [2,4,2] results", function (t) {
   var kos = [2,4,2];
-  var ko = new KnockOut(10, kos);
+  var ko = new Masters(10, kos);
 
   // pre-scoring:
   var res = ko.results();
