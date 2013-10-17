@@ -10,8 +10,8 @@ var makeKos = function (numPlayers) {
 };
 
 var Chairs = Masters.sub('Chairs', ['numPlayers'], {
-  init: function (cb) {
-    cb(this.numPlayers, makeKos(this.numPlayers));
+  init: function (initParent) {
+    initParent(this.numPlayers, makeKos(this.numPlayers));
   }
 });
 

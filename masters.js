@@ -14,10 +14,10 @@ var makeMatches = function (np, kos) {
 };
 
 var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
-  init: function (cb) {
-    cb(makeMatches(this.numPlayers, this.kos));
+  init: function (initParent) {
+    initParent(makeMatches(this.numPlayers, this.kos));
   },
-  score: function (id, score) {
+  score: function (id /*,score*/) {
     var ko = this.kos[id.r - 1] || 0;
     if (ko) {
       // if more matches to play -> progress the top not knocked out
@@ -35,7 +35,6 @@ var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
       // progress
       nextM.p = top;
     }
-    return true;
   },
   unscorable: function (id, score) {
     var ko = this.kos[id.r - 1] || 0;
@@ -46,8 +45,6 @@ var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
     }
     return null;
   }
-
-
 });
 
 Masters.invalid = function (np, kos) {
