@@ -1,9 +1,58 @@
 var Base = require('tournament')
   , $ = require('interlude');
 
-var invalid = function (np, kos) {
+// assumes valid parameters
+var makeMatches = function (np, kos) {
+  var ms = [];
+  ms.push({id: {s:1, r:1, m:1}, p: $.range(np)});
+  for (var i = 0; i < kos.length; i += 1) {
+    // create the next round from current ko parameter
+    np -= kos[i];
+    ms.push({id: {s:1, r:i+2, m:1}, p: $.replicate(np, Base.NONE)});
+  }
+  return ms;
+};
+
+var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
+  init: function (cb) {
+    cb(makeMatches(this.numPlayers, this.kos));
+  },
+  score: function (id, score) {
+    var ko = this.kos[id.r - 1] || 0;
+    if (ko) {
+      // if more matches to play -> progress the top not knocked out
+      var m = this.findMatch(id);
+      var adv = m.p.length - ko;
+      var top = Base.sorted(m).slice(0, adv);
+      var nextM = this.findMatch({s:1, r: m.id.r+1, m:1});
+
+      if (!nextM || top.length !== adv) { // sanity
+        var str =  !nextM ?
+          "next match not found in tournament":
+          "less players than expected in round " + m.id.r+1;
+        throw new Error("corrupt " + Masters.idString(id) + ": " + str);
+      }
+      // progress
+      nextM.p = top;
+    }
+    return true;
+  },
+  unscorable: function (id, score) {
+    var ko = this.kos[id.r - 1] || 0;
+    var m = this.findMatch(id);
+    var adv = m.p.length - ko;
+    if (ko > 0 && score[adv-1] === score[adv]) {
+      return "scores must unambiguous decide who is in the top " + adv;
+    }
+    return null;
+  }
+
+
+});
+
+Masters.invalid = function (np, kos) {
   if (!Number.isFinite(np) || Math.ceil(np) !== np || np < 3) {
-    return "Masters must contain at least 3 players";
+    return "need at least 3 players";
   }
   if (!Array.isArray(kos)) {
     return "kos must be an array of integers";
@@ -23,79 +72,8 @@ var invalid = function (np, kos) {
   }
   return null;
 };
-
-// requires only num players and array of knockout values for each round
-var makeTournament = function (np, kos) {
-  var invReason = invalid(np, kos);
-  if (invReason !== null) {
-    console.error("Invalid Masters configuration %dp kos=%j", np, kos);
-    console.error("reason: %s", invReason);
-    return [];
-  }
-
-  var ms = [];
-  ms.push({id: {s:1, r:1, m:1}, p: $.range(np)});
-  for (var i = 0; i < kos.length; i += 1) {
-    // create the next round from current ko parameter
-    np -= kos[i];
-    ms.push({id: {s:1, r:i+2, m:1}, p: $.replicate(np, Base.NONE)});
-  }
-  return ms;
-};
-
-// interface
-function Masters(numPlayers, koArray) {
-  if (!(this instanceof Masters)) {
-    return new Masters(numPlayers, koArray);
-  }
-  this.version = 1;
-  this.kos = koArray;
-  this.numPlayers = numPlayers;
-  Base.call(this, Masters, makeTournament(numPlayers, koArray));
-}
-Masters.prototype = Object.create(Base.prototype);
-Masters.parse = Base.parse.bind(null, Masters);
-Masters.invalid = invalid;
 Masters.idString = function (id) {
   return "R" + id.r; // always only one match per round
-};
-
-Masters.prototype.unscorable = function (id, score, allowPast) {
-  var invReason = Base.prototype.unscorable.call(this, id, score, allowPast);
-  if (invReason !== null) {
-    return invReason;
-  }
-  var ko = this.kos[id.r - 1] || 0;
-  var m = this.findMatch(id);
-  var adv = m.p.length - ko;
-  if (ko > 0 && score[adv-1] === score[adv]) {
-    return "scores must unambiguous decide who is in the top " + adv;
-  }
-  return null;
-};
-
-Masters.prototype.score = function (id, score) {
-  if (Base.prototype.score.call(this, id, score)) {
-    var ko = this.kos[id.r - 1] || 0;
-    if (ko) {
-      // if more matches to play -> progress the top not knocked out
-      var m = this.findMatch(id);
-      var adv = m.p.length - ko;
-      var top = $.zip(m.p, m.m).sort(Base.compareZip).slice(0, adv);
-      var nextM = this.findMatch({s:1, r: m.id.r+1, m:1});
-
-      if (!nextM || top.length !== adv) { // sanity
-        var str =  !nextM ?
-          "next match not found in tournament":
-          "less players than expected in round " + m.id.r+1;
-        throw new Error("corrupt " + Masters.idString(id) + ": " + str);
-      }
-      // progress
-      nextM.p = $.pluck('0', top);
-    }
-    return true;
-  }
-  return false;
 };
 
 // helper for results
@@ -189,11 +167,6 @@ Masters.prototype.results = function () {
     }
   }
   return res.sort(Base.compareRes);
-};
-
-// slightly more efficient than base Implementation
-Masters.prototype.isDone = function () {
-  return !!this.matches[this.matches.length-1].m;
 };
 
 module.exports = Masters;
