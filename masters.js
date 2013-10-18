@@ -108,17 +108,9 @@ var positionTies = function (res, sortedPairSlice, startPos) {
 
 
 Masters.prototype.results = function () {
+  var res = Base.prototype.results.call(this, { sum: 0 });
   var kos = this.kos;
   var ms = this.matches;
-  var res = [];
-  for (var s = 0; s < ms[0].p.length; s += 1) {
-    res[s] = {
-      seed : s + 1,
-      sum  : 0,
-      wins : 0,
-      pos  : ms[0].length
-    };
-  }
 
   // iterative ko results involve: assume previous match have filled in results:
   // then scan new match m:
