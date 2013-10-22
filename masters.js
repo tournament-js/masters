@@ -17,29 +17,27 @@ var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
   init: function (initParent) {
     initParent(makeMatches(this.numPlayers, this.kos));
   },
-  score: function (id /*,score*/) {
-    var ko = this.kos[id.r - 1] || 0;
+  progress: function (match) {
+    var ko = this.kos[match.id.r - 1] || 0;
     if (ko) {
       // if more matches to play -> progress the top not knocked out
-      var m = this.findMatch(id);
-      var adv = m.p.length - ko;
-      var top = Base.sorted(m).slice(0, adv);
-      var nextM = this.findMatch({s:1, r: m.id.r+1, m:1});
+      var adv = match.p.length - ko;
+      var top = Base.sorted(match).slice(0, adv);
+      var nextM = this.findMatch({s:1, r: match.id.r+1, m:1});
 
       if (!nextM || top.length !== adv) { // sanity
         var str =  !nextM ?
           "next match not found in tournament":
-          "less players than expected in round " + m.id.r+1;
-        throw new Error("corrupt " + Masters.idString(id) + ": " + str);
+          "less players than expected in round " + match.id.r+1;
+        throw new Error("corruption at " +this.rep(match.id) + ": " + str);
       }
       // progress
       nextM.p = top;
     }
   },
-  unscorable: function (id, score) {
-    var ko = this.kos[id.r - 1] || 0;
-    var m = this.findMatch(id);
-    var adv = m.p.length - ko;
+  verify: function (match, score) {
+    var ko = this.kos[match.id.r - 1] || 0;
+    var adv = match.p.length - ko;
     if (ko > 0 && score[adv-1] === score[adv]) {
       return "scores must unambiguous decide who is in the top " + adv;
     }
