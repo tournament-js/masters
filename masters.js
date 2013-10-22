@@ -29,7 +29,7 @@ var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
         var str =  !nextM ?
           "next match not found in tournament":
           "less players than expected in round " + match.id.r+1;
-        throw new Error("corruption at " +this.rep(match.id) + ": " + str);
+        throw new Error("corruption at " + this.rep(match.id) + ": " + str);
       }
       // progress
       nextM.p = top;
