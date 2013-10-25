@@ -2,6 +2,7 @@
 ==================
   * Using tournament@0.17.0 for better stats interface
   * Rename `sum` to `for` for tournament consistency (maybe add against in future)
+  * Huge code readability improvements
 
 0.2.0 / 2013-10-22
 ==================
