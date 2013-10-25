@@ -46,7 +46,7 @@ var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
 });
 
 Masters.invalid = function (np, kos) {
-  if (!Number.isFinite(np) || Math.ceil(np) !== np || np < 3) {
+  if (!Base.isInteger(np) || np < 3) {
     return "need at least 3 players";
   }
   if (!Array.isArray(kos)) {
@@ -54,7 +54,7 @@ Masters.invalid = function (np, kos) {
   }
   for (var i = 0; i < kos.length; i += 1) {
     var ko = kos[i];
-    if (!Number.isFinite(ko) || Math.ceil(ko) !== ko) {
+    if (!Base.isInteger(ko)) {
       return "kos must be an array of integers";
     }
     if (ko < 1) {
@@ -94,66 +94,51 @@ var positionTies = function (res, sortedPairSlice, startPos) {
     }
     res[p].pos = pos;
     scr = s;
-
-    // grand final winner have to be computed outside normal progression check
-    // so do it in here if we just moved the guy to position 1
-    // this function is only called once on each set - and tested heavily anyway
-    if (res[p].pos === 1) {
-      res[p].wins += 1;
-    }
   }
 };
 
-
-Masters.prototype.results = function () {
-  var res = Base.prototype.results.call(this, { sum: 0 });
-  var kos = this.kos;
-  var ms = this.matches;
-
-  // iterative ko results involve: assume previous match have filled in results:
-  // then scan new match m:
-  // if not played, all tie at m.p.length, else:
-  // - losers should have pos === their last round scores, so current pos
-  // - winners will get their scores calculated in the next round (unless final)
-  // - winners get complete final calculation if final
-  // - can leave all other player alone as they were covered in earlier iterations
-
-  for (var i = 0; i < ms.length; i += 1) {
-    var m = ms[i];
-    if (!m.m) {
-      // no score, tie all players in this match at m.p.length
-      for (var j = 0; j < m.p.length; j += 1) {
-        var idx = m.p[j] - 1;
-        res[idx].pos = m.p.length;
-      }
-      break; // last scored match, no more to do
-    }
+var updateBasedOnMatch = function (kos, res, m, i) {
+  // handle players that have reached the match
+  m.p.filter($.gt(0)).forEach(function (s) {
+    res[s-1].pos = m.p.length; // tie them all
+  });
+  if (m.m) {
     var adv = m.p.length - (kos[i] || 0);
+    var isFinal = (kos[i] == null);
     var top = $.zip(m.p, m.m).sort(Base.compareZip);
+
+    // update positions
+    if (!isFinal) {
+      // tie compute the non-advancers
+      positionTies(res, top.slice(-kos[i]), adv);
+    }
+    else if (isFinal) {
+      // tie compute the entire final
+      positionTies(res, top, 0);
+    }
 
     // update score sum and wins (won if proceeded)
     for (var k = 0; k < top.length; k += 1) {
       var p = top[k][0] - 1;
       var sc = top[k][1];
-      res[p].sum += sc;
-      if (i < ms.length - 1 && k < adv) {
+      res[p].for += sc;
+      // TODO: against?
+      if ((!isFinal && k < adv) || (isFinal && res[p].pos === 1)) {
         res[p].wins += 1;
       }
     }
-
-    if (kos[i]) { // set positions (allow ties) for losers
-      positionTies(res, top.slice(-kos[i]), top.length - kos[i]);
-      // next match will set the remaining players if unscored
-      // if scored one more round of updating losers
-    }
-
-    if (!kos[i]) {
-      // update all players in final (allow ties)
-      positionTies(res, top, 0);
-      break; // no more matches after final
-    }
   }
-  return res.sort(Base.compareRes);
+  return res;
+};
+
+Masters.prototype.initResult = function () {
+  return {};
+};
+Masters.prototype.stats = function (res) {
+  return this.matches.reduce(
+    updateBasedOnMatch.bind(null, this.kos),
+    res
+  ).sort(Base.compareRes);
 };
 
 module.exports = Masters;

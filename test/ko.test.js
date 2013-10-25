@@ -84,7 +84,7 @@ test("ko 10 [2,4,2] results", function (t) {
   res.forEach(function (p) {
     t.ok(p.seed <= 10, p.seed + " is in top 10");
     t.equal(p.wins, 0, p.seed + " has not won anything yet");
-    t.equal(p.sum, 0, p.seed + " score sums to zero");
+    t.equal(p.for, 0, p.seed + " score sums to zero");
     t.equal(p.pos, 10, p.seed + " ties at match 1 length");
   });
   $.range(10).forEach(function (n) {
@@ -109,12 +109,12 @@ test("ko 10 [2,4,2] results", function (t) {
   res.slice(0, -kos[0]).forEach(function (p, i) {
     t.ok(p.seed <= 8, p.seed + " is in first 8 as scored that way");
     t.equal(p.wins, 1, p.seed + " won 1 match");
-    t.equal(p.sum, 10 - i, p.seed + " score sums to what we gave him in match 1");
+    t.equal(p.for, 10 - i, p.seed + " score sums to what we gave him in match 1");
     t.equal(p.pos, 8, p.seed + " ties at match 2 length");
   });
   res.slice(-kos[0]).forEach(function (p) {
     t.equal(p.wins, 0, p.seed + " did not advance");
-    t.equal(p.sum, 2, p.seed + " got 2 pts");
+    t.equal(p.for, 2, p.seed + " got 2 pts");
     t.equal(p.pos, 9, p.seed + " tied at 9th");
   });
   $.range(10).forEach(function (n) {
@@ -145,14 +145,14 @@ test("ko 10 [2,4,2] results", function (t) {
     // the ones that won both matches!
     t.ok(p.seed <= 4, p.seed + " is in first 4 as scored that way");
     t.equal(p.wins, 2, p.seed + " won 2 matches");
-    //t.equal(p.sum, 10 + 8 - 2*i, p.seed + " score sums to sum of r1 and r2 score");
+    //t.equal(p.for, 10 + 8 - 2*i, p.seed + " score sums to sum of r1 and r2 score");
     t.equal(p.pos, 4, p.seed + " ties at match 3 length");
   });
   // winners of 1st match, losers of 2nd
   res.slice(kos[1], -kos[0]).forEach(function (p, i) {
     t.ok(p.seed <= 8, p.seed + " is in first 8 as scored that way");
     t.equal(p.wins, 1, p.seed + " won 1 match");
-    t.ok(p.sum > 10 - (i+kos[1]), p.seed + " score sums to what more than m1 pts");
+    t.ok(p.for > 10 - (i+kos[1]), p.seed + " score sums to what more than m1 pts");
     t.ok(p.pos <= 10-kos[0] && p.pos > kos[1], p.seed + " pos resides in between");
 
     // verify ties for 6 and 7 and verify slice size
@@ -166,7 +166,7 @@ test("ko 10 [2,4,2] results", function (t) {
   // losers of 1st match stay the same
   res.slice(-kos[0]).forEach(function (p) {
     t.equal(p.wins, 0, p.seed + " did not advance");
-    t.equal(p.sum, 2, p.seed + " got 2 pts");
+    t.equal(p.for, 2, p.seed + " got 2 pts");
     t.equal(p.pos, 9, p.seed + " tied at 9th");
   });
   $.range(10).forEach(function (n) {

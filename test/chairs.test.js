@@ -58,11 +58,11 @@ test("chairs 5", function (t) {
   t.deepEqual(trn2.matches, trn.matches, "matches same");
 
   var res = [
-    {"seed" : 1, "wins" : 4, "pos" : 1, "sum" : 5+4+3+2},
-    {"seed" : 2, "wins" : 3, "pos" : 2, "sum" : 4+3+2+1},
-    {"seed" : 3, "wins" : 2, "pos" : 3, "sum" : 3+2+1},
-    {"seed" : 4, "wins" : 1, "pos" : 4, "sum" : 2+1},
-    {"seed" : 5, "wins" : 0, "pos" : 5, "sum" : 1}
+    {"seed" : 1, "wins" : 4, "pos" : 1, "for" : 5+4+3+2},
+    {"seed" : 2, "wins" : 3, "pos" : 2, "for" : 4+3+2+1},
+    {"seed" : 3, "wins" : 2, "pos" : 3, "for" : 3+2+1},
+    {"seed" : 4, "wins" : 1, "pos" : 4, "for" : 2+1},
+    {"seed" : 5, "wins" : 0, "pos" : 5, "for" : 1}
   ];
 
   t.deepEqual(trn.results(), res, "results expected");
