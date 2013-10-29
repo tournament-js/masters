@@ -1,19 +1,25 @@
 var Base = require('tournament')
   , $ = require('interlude');
 
-// assumes valid parameters
+//------------------------------------------------------------------
+// init helpers
+//------------------------------------------------------------------
+
 var makeMatches = function (np, kos) {
   var ms = [];
-  ms.push({id: {s:1, r:1, m:1}, p: $.range(np)});
+  ms.push({ id: { s: 1, r: 1, m: 1 }, p: $.range(np) });
   for (var i = 0; i < kos.length; i += 1) {
     // create the next round from current ko parameter
     np -= kos[i];
-    ms.push({id: {s:1, r:i+2, m:1}, p: $.replicate(np, Base.NONE)});
+    ms.push({ id: { s: 1, r: i+2, m: 1 }, p: $.replicate(np, Base.NONE) });
   }
   return ms;
 };
 
-// helper for stats
+//------------------------------------------------------------------
+// statistics helpers
+//------------------------------------------------------------------
+
 var positionTies = function (res, sortedPairSlice, startPos) {
   // when we only score a subset start positioning at the beginning of slice
   var pos = startPos
@@ -73,11 +79,15 @@ var updateBasedOnMatch = function (kos, res, m, i) {
   return res;
 };
 
+//------------------------------------------------------------------
+// Interface
+//------------------------------------------------------------------
 
 var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
   init: function (initParent) {
     initParent(makeMatches(this.numPlayers, this.kos));
   },
+
   progress: function (match) {
     var ko = this.kos[match.id.r - 1] || 0;
     if (ko) {
@@ -96,6 +106,7 @@ var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
       nextM.p = top;
     }
   },
+
   verify: function (match, score) {
     var ko = this.kos[match.id.r - 1] || 0;
     var adv = match.p.length - ko;
@@ -104,7 +115,7 @@ var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
     }
     return null;
   },
-  initResult: $.constant({}),
+
   stats: function (resAry) {
     return this.matches.reduce(
       updateBasedOnMatch.bind(null, this.kos),
@@ -135,6 +146,7 @@ Masters.invalid = function (np, kos) {
   }
   return null;
 };
+
 Masters.idString = function (id) {
   return "R" + id.r; // always only one match per round
 };
