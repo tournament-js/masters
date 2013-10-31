@@ -1,5 +1,6 @@
-0.4.0 / 2013-11-XX
+0.4.0 / 2013-10-31
 ==================
+  * Using tournament@0.18.0 for unified constructor interface
   * Everything but numPlayers optional to constructor
   * Not specifying `knockouts` for the specifics of what to knock out will give you what Chairs used to do (knock out one per round until 2 left)
   * Chairs have been removed

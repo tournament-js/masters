@@ -11,7 +11,11 @@ Masters tournaments consist of a pool of players, repeatedly fighting against ea
 Simply specify the number of players and an array of numbers to knock out per rounds. The resulting tournament will have the same number of matches as that array's length + 1.
 
 ```js
-var trn = new Masters(10, [3, 2, 2]);
+// 5p match -> 4p match -> 3p match -> 2p final
+var trn = new Masters(5);
+
+// see below
+var trn = new Masters(10, { knockouts: [3, 2, 2] });
 ```
 
 This example will create:
