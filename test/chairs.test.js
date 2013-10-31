@@ -3,38 +3,37 @@ var tap = require('tap')
   , $ = require('interlude')
   , Base = require('tournament')
   , Masters = require('../')
-  , Chairs = require('../chairs')
-  , rep = Chairs.idString;
+  , rep = Masters.idString;
 
 test("invalid", function (t) {
   for (var i = 0; i < 10; i += 1) {
-    var reason = Chairs.invalid(i);
+    var reason = Masters.invalid(i);
     if (i >= 3) {
-      t.equal(reason, null, "valid to create Chairs with " + i + " players");
-      var trn = Chairs(i);
-      t.equal(trn.matches.length, i-1, "n-1 matches in n=" + i + " player Chairs");
+      t.equal(reason, null, "valid to create Masters with " + i + " players");
+      var trn = Masters(i);
+      t.equal(trn.matches.length, i-1, "n-1 matches in n=" + i + " player Masters");
     }
     else {
-      t.ok(reason, "illegal to create Chairs with " + i + " players");
+      t.ok(reason, "illegal to create Masters with " + i + " players");
     }
   }
   t.end();
 });
 
 test("chairs 5", function (t) {
-  var trn = new Chairs(5);
+  var trn = new Masters(5);
   t.ok(!trn.isDone(), "!isDone r0");
 
   t.ok(trn.score(trn.matches[0].id, [5,4,3,2,1]), "score match 0");
-  t.equal(Chairs.idString(trn.matches[0].id), "R1", "match 0 id");
+  t.equal(Masters.idString(trn.matches[0].id), "R1", "match 0 id");
   t.ok(!trn.isDone(), "!isDone r1");
 
   t.ok(trn.score(trn.matches[1].id, [4,3,2,1]), "score match 1");
-  t.equal(Chairs.idString(trn.matches[1].id), "R2", "match 1 id");
+  t.equal(Masters.idString(trn.matches[1].id), "R2", "match 1 id");
   t.ok(!trn.isDone(), "!isDone r2");
 
   t.ok(trn.score(trn.matches[2].id, [3,2,1]), "score match 2");
-  t.equal(Chairs.idString(trn.matches[2].id), "R3", "match 2 id");
+  t.equal(Masters.idString(trn.matches[2].id), "R3", "match 2 id");
   t.ok(!trn.isDone(), "!isDone r3");
 
   for (var i = 1; i < 5; i += 1) {
@@ -47,12 +46,11 @@ test("chairs 5", function (t) {
   };
 
   t.ok(trn.score(trn.matches[3].id, [2,1]), "score match 3");
-  t.equal(Chairs.idString(trn.matches[3].id), "R4", "match 3 id");
+  t.equal(Masters.idString(trn.matches[3].id), "R4", "match 3 id");
   t.ok(trn.isDone(), "isDone r4");
 
   var ser = trn + '';
-  var trn2 = Chairs.parse(ser);
-  t.ok(trn2 instanceof Chairs, "trn2 is Chairs");
+  var trn2 = Masters.parse(ser);
   t.ok(trn2 instanceof Masters, "trn2 is Masters");
   t.ok(trn2 instanceof Base, "trn2 is Base");
   t.deepEqual(trn2.matches, trn.matches, "matches same");

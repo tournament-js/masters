@@ -83,72 +83,85 @@ var updateBasedOnMatch = function (kos, res, m, i) {
 // Interface
 //------------------------------------------------------------------
 
-var Masters = Base.sub('Masters', ['numPlayers', 'kos'], {
-  init: function (initParent) {
-    initParent(makeMatches(this.numPlayers, this.kos));
+var Masters = Base.sub('Masters', function (opts, initParent) {
+  this.knockouts = opts.knockouts;
+  initParent(makeMatches(this.numPlayers, this.knockouts));
+});
+
+var makeDefaultKos = function (np) {
+  var kos = [];
+  for (var i = np; i > 2; i -= 1) {
+    kos.push(1);
+  }
+  return kos;
+};
+
+Masters.configure({
+  defaults: function (np, opts) {
+    // no knockouts specified => musical chairs style (1 out per round)
+    opts.knockouts = opts.knockouts || makeDefaultKos(np);
+    return opts;
   },
 
-  progress: function (match) {
-    var ko = this.kos[match.id.r - 1] || 0;
-    if (ko) {
-      // if more matches to play -> progress the top not knocked out
-      var adv = match.p.length - ko;
-      var top = Base.sorted(match).slice(0, adv);
-      var nextM = this.findMatch({s:1, r: match.id.r+1, m:1});
-
-      if (!nextM || top.length !== adv) { // sanity
-        var str =  !nextM ?
-          "next match not found in tournament":
-          "less players than expected in round " + match.id.r+1;
-        throw new Error("corruption at " + this.rep(match.id) + ": " + str);
-      }
-      // progress
-      nextM.p = top;
+  invalid: function (np, opts) {
+    if (np < 3) {
+      return "need at least 3 players";
     }
-  },
-
-  verify: function (match, score) {
-    var ko = this.kos[match.id.r - 1] || 0;
-    var adv = match.p.length - ko;
-    if (ko > 0 && score[adv-1] === score[adv]) {
-      return "scores must unambiguous decide who is in the top " + adv;
+    var kos = opts.knockouts;
+    if (!Array.isArray(kos) || !kos.every(Base.isInteger)) {
+      return "knockouts must be an array of positive integers";
+    }
+    for (var i = 0; i < kos.length; i += 1) {
+      var ko = kos[i];
+      if (ko < 1) {
+        return "must knock out a positive number of players each round";
+      }
+      if (np - ko <= 1) {
+        return "must leave at least two players in every match";
+      }
+      np -= ko;
     }
     return null;
-  },
-
-  stats: function (resAry) {
-    return this.matches.reduce(
-      updateBasedOnMatch.bind(null, this.kos),
-      resAry
-    ).sort(Base.compareRes);
   }
 });
 
-Masters.invalid = function (np, kos) {
-  if (!Base.isInteger(np) || np < 3) {
-    return "need at least 3 players";
+Masters.idString = function (id) {
+  return "R" + id.r; // always only one match per round
+};
+
+Masters.prototype.progress = function (match) {
+  var ko = this.knockouts[match.id.r - 1] || 0;
+  if (ko) {
+    // if more matches to play -> progress the top not knocked out
+    var adv = match.p.length - ko;
+    var top = Base.sorted(match).slice(0, adv);
+    var nextM = this.findMatch({s:1, r: match.id.r+1, m:1});
+
+    if (!nextM || top.length !== adv) { // sanity
+      var str =  !nextM ?
+        "next match not found in tournament":
+        "less players than expected in round " + match.id.r+1;
+      throw new Error("corruption at " + this.rep(match.id) + ": " + str);
+    }
+    // progress
+    nextM.p = top;
   }
-  if (!Array.isArray(kos)) {
-    return "kos must be an array of integers";
-  }
-  for (var i = 0; i < kos.length; i += 1) {
-    var ko = kos[i];
-    if (!Base.isInteger(ko)) {
-      return "kos must be an array of integers";
-    }
-    if (ko < 1) {
-      return "must knock out players each round";
-    }
-    if (np - ko <= 1) {
-      return "cannot leave one or less players in a match";
-    }
-    np -= ko;
+};
+
+Masters.prototype.verify = function (match, score) {
+  var ko = this.knockouts[match.id.r - 1] || 0;
+  var adv = match.p.length - ko;
+  if (ko > 0 && score[adv-1] === score[adv]) {
+    return "scores must unambiguous decide who is in the top " + adv;
   }
   return null;
 };
 
-Masters.idString = function (id) {
-  return "R" + id.r; // always only one match per round
+Masters.prototype.stats = function (resAry) {
+  return this.matches.reduce(
+    updateBasedOnMatch.bind(null, this.knockouts),
+    resAry
+  ).sort(Base.compareRes);
 };
 
 module.exports = Masters;
