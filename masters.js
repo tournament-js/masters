@@ -29,7 +29,7 @@ var positionTies = function (res, sortedPairSlice, startPos) {
   // loop over players in order of their score
   for (var k = 0; k < sortedPairSlice.length; k += 1) {
     var pair = sortedPairSlice[k]
-      , p = pair[0] - 1
+      , p = pair[0]
       , s = pair[1];
 
     // if this is a tie, pos is previous one, and next real pos must be incremented
@@ -40,7 +40,8 @@ var positionTies = function (res, sortedPairSlice, startPos) {
       pos += 1 + ties; // if we tied, must also + that
       ties = 0;
     }
-    res[p].pos = pos;
+    var resEl = Base.resultEntry(res, p);
+    resEl.pos = pos;
     scr = s;
   }
 };
@@ -48,7 +49,7 @@ var positionTies = function (res, sortedPairSlice, startPos) {
 var updateBasedOnMatch = function (kos, res, m, i) {
   // handle players that have reached the match
   m.p.filter($.gt(0)).forEach(function (s) {
-    res[s-1].pos = m.p.length; // tie them all
+    Base.resultEntry(res, s).pos = m.p.length; // tie them all
   });
   if (m.m) {
     var adv = m.p.length - (kos[i] || 0);
@@ -67,12 +68,13 @@ var updateBasedOnMatch = function (kos, res, m, i) {
 
     // update score sum and wins (won if proceeded)
     for (var k = 0; k < top.length; k += 1) {
-      var p = top[k][0] - 1;
+      var p = top[k][0];
       var sc = top[k][1];
-      res[p].for += sc;
+      var resEl = Base.resultEntry(res, p);
+      resEl.for += sc;
       // TODO: against?
-      if ((!isFinal && k < adv) || (isFinal && res[p].pos === 1)) {
-        res[p].wins += 1;
+      if ((!isFinal && k < adv) || (isFinal && resEl.pos === 1)) {
+        resEl.wins += 1;
       }
     }
   }
