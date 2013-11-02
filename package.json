@@ -2,7 +2,7 @@
   "name": "masters",
   "description": "Repeat elimination tournaments",
   "author": "Eirik Albrigtsen <analsandblaster@gmail.com>",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "repository": {
     "type": "git",
     "url": "clux/masters"
