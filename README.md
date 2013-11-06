@@ -1,7 +1,6 @@
 # Masters tournaments
 [![Build Status](https://secure.travis-ci.org/clux/masters.png)](http://travis-ci.org/clux/masters)
 [![Dependency Status](https://david-dm.org/clux/masters.png)](https://david-dm.org/clux/masters)
-[![Code Climate](https://codeclimate.com/github/clux/masters.png)](https://codeclimate.com/github/clux/masters)
 
     Stability: 2 - Unstable
 

@@ -17,7 +17,7 @@ var makeMatches = function (np, kos) {
 };
 
 //------------------------------------------------------------------
-// statistics helpers
+// positioning helper
 //------------------------------------------------------------------
 
 var positionTies = function (res, sortedPairSlice, startPos) {
@@ -44,41 +44,6 @@ var positionTies = function (res, sortedPairSlice, startPos) {
     resEl.pos = pos;
     scr = s;
   }
-};
-
-var updateBasedOnMatch = function (kos, res, m, i) {
-  // handle players that have reached the match
-  m.p.filter($.gt(0)).forEach(function (s) {
-    Base.resultEntry(res, s).pos = m.p.length; // tie them all
-  });
-  if (m.m) {
-    var adv = m.p.length - (kos[i] || 0);
-    var isFinal = (kos[i] == null);
-    var top = $.zip(m.p, m.m).sort(Base.compareZip);
-
-    // update positions
-    if (!isFinal) {
-      // tie compute the non-advancers
-      positionTies(res, top.slice(-kos[i]), adv);
-    }
-    else if (isFinal) {
-      // tie compute the entire final
-      positionTies(res, top, 0);
-    }
-
-    // update score sum and wins (won if proceeded)
-    for (var k = 0; k < top.length; k += 1) {
-      var p = top[k][0];
-      var sc = top[k][1];
-      var resEl = Base.resultEntry(res, p);
-      resEl.for += sc;
-      // TODO: against?
-      if ((!isFinal && k < adv) || (isFinal && resEl.pos === 1)) {
-        resEl.wins += 1;
-      }
-    }
-  }
-  return res;
 };
 
 //------------------------------------------------------------------
@@ -131,7 +96,7 @@ Masters.idString = function (id) {
   return "R" + id.r; // always only one match per round
 };
 
-Masters.prototype.progress = function (match) {
+Masters.prototype._progress = function (match) {
   var ko = this.knockouts[match.id.r - 1] || 0;
   if (ko) {
     // if more matches to play -> progress the top not knocked out
@@ -150,7 +115,7 @@ Masters.prototype.progress = function (match) {
   }
 };
 
-Masters.prototype.verify = function (match, score) {
+Masters.prototype._verify = function (match, score) {
   var ko = this.knockouts[match.id.r - 1] || 0;
   var adv = match.p.length - ko;
   if (ko > 0 && score[adv-1] === score[adv]) {
@@ -159,11 +124,40 @@ Masters.prototype.verify = function (match, score) {
   return null;
 };
 
-Masters.prototype.stats = function (resAry) {
-  return this.matches.reduce(
-    updateBasedOnMatch.bind(null, this.knockouts),
-    resAry
-  ).sort(Base.compareRes);
+Masters.prototype._stats = function (res, m) {
+  // handle players that have reached the match
+  m.p.filter($.gt(0)).forEach(function (s) {
+    Base.resultEntry(res, s).pos = m.p.length; // tie them all
+  });
+  if (m.m) {
+    var ko = this.knockouts[m.id.r-1];
+    var adv = m.p.length - (ko || 0);
+    var isFinal = (ko == null);
+    var top = $.zip(m.p, m.m).sort(Base.compareZip);
+
+    // update positions
+    if (!isFinal) {
+      // tie compute the non-advancers
+      positionTies(res, top.slice(-ko), adv);
+    }
+    else if (isFinal) {
+      // tie compute the entire final
+      positionTies(res, top, 0);
+    }
+
+    // update score sum and wins (won if proceeded)
+    for (var k = 0; k < top.length; k += 1) {
+      var p = top[k][0];
+      var sc = top[k][1];
+      var resEl = Base.resultEntry(res, p);
+      resEl.for += sc;
+      // TODO: against?
+      if ((!isFinal && k < adv) || (isFinal && resEl.pos === 1)) {
+        resEl.wins += 1;
+      }
+    }
+  }
+  return res;
 };
 
 module.exports = Masters;
