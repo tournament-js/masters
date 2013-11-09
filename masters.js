@@ -20,9 +20,9 @@ var makeMatches = function (np, kos) {
 // positioning helper
 //------------------------------------------------------------------
 
-var positionTies = function (res, sortedPairSlice, startPos) {
+var positionTies = function (res, sortedPairSlice, startIdx) {
   // when we only score a subset start positioning at the beginning of slice
-  var pos = startPos
+  var pos = startIdx
     , ties = 0
     , scr = -Infinity;
 
@@ -133,17 +133,11 @@ Masters.prototype._stats = function (res, m) {
     var ko = this.knockouts[m.id.r-1];
     var adv = m.p.length - (ko || 0);
     var isFinal = (ko == null);
-    var top = $.zip(m.p, m.m).sort(Base.compareZip);
 
     // update positions
-    if (!isFinal) {
-      // tie compute the non-advancers
-      positionTies(res, top.slice(-ko), adv);
-    }
-    else if (isFinal) {
-      // tie compute the entire final
-      positionTies(res, top, 0);
-    }
+    var top = $.zip(m.p, m.m).sort(Base.compareZip);
+    var startIdx = isFinal ? 0 : adv;
+    positionTies(res, top.slice(startIdx), startIdx);
 
     // update score sum and wins (won if proceeded)
     for (var k = 0; k < top.length; k += 1) {
