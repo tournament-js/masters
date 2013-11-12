@@ -20,15 +20,14 @@ var makeMatches = function (np, kos) {
 // positioning helper
 //------------------------------------------------------------------
 
-var positionTies = function (res, sortedPairSlice, startIdx) {
-  // when we only score a subset start positioning at the beginning of slice
+var matchTieCompute = function (slice, startIdx, cb) {
   var pos = startIdx
     , ties = 0
     , scr = -Infinity;
 
   // loop over players in order of their score
-  for (var k = 0; k < sortedPairSlice.length; k += 1) {
-    var pair = sortedPairSlice[k]
+  for (var k = 0; k < slice.length; k += 1) {
+    var pair = slice[k]
       , p = pair[0]
       , s = pair[1];
 
@@ -40,9 +39,8 @@ var positionTies = function (res, sortedPairSlice, startIdx) {
       pos += 1 + ties; // if we tied, must also + that
       ties = 0;
     }
-    var resEl = Base.resultEntry(res, p);
-    resEl.pos = pos;
     scr = s;
+    cb(p, pos); // user have to find resultEntry himself from seed
   }
 };
 
@@ -96,6 +94,7 @@ Masters.idString = function (id) {
   return "R" + id.r; // always only one match per round
 };
 
+Masters.prototype._initResult = $.constant({ against: 0 });
 Masters.prototype._progress = function (match) {
   var ko = this.knockouts[match.id.r - 1] || 0;
   if (ko) {
@@ -137,7 +136,9 @@ Masters.prototype._stats = function (res, m) {
     // update positions
     var top = $.zip(m.p, m.m).sort(Base.compareZip);
     var startIdx = isFinal ? 0 : adv;
-    positionTies(res, top.slice(startIdx), startIdx);
+    matchTieCompute(top.slice(startIdx), startIdx, function (p, pos) {
+      Base.resultEntry(res, p).pos = pos;
+    });
 
     // update score sum and wins (won if proceeded)
     for (var k = 0; k < top.length; k += 1) {
@@ -145,7 +146,7 @@ Masters.prototype._stats = function (res, m) {
       var sc = top[k][1];
       var resEl = Base.resultEntry(res, p);
       resEl.for += sc;
-      // TODO: against?
+      resEl.against += (top[0][1] - sc); // difference with winner
       if ((!isFinal && k < adv) || (isFinal && resEl.pos === 1)) {
         resEl.wins += 1;
       }

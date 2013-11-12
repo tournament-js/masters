@@ -1,3 +1,7 @@
+0.4.3 / 2013-11-XX
+==================
+  * `results[i].against` added - measures sum(difference from winner)
+
 0.4.2 / 2013-11-06
 ==================
   * Interface with tournament@0.20.0 for cleaner results implementation

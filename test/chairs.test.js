@@ -1,16 +1,14 @@
 var tap = require('tap')
   , test = tap.test
-  , $ = require('interlude')
   , Base = require('tournament')
-  , Masters = require('../')
-  , rep = Masters.idString;
+  , Masters = require('../');
 
 test("invalid", function (t) {
   for (var i = 0; i < 10; i += 1) {
     var reason = Masters.invalid(i);
     if (i >= 3) {
       t.equal(reason, null, "valid to create Masters with " + i + " players");
-      var trn = Masters(i);
+      var trn = new Masters(i);
       t.equal(trn.matches.length, i-1, "n-1 matches in n=" + i + " player Masters");
     }
     else {
@@ -41,9 +39,9 @@ test("chairs 5", function (t) {
       t.deepEqual(trn.upcoming(i), {s:1,r:4,m:1}, "players still left play");
     }
     else {
-      t.equal(trn.upcoming(i), undefined, "knocked out ones do not")
+      t.equal(trn.upcoming(i), undefined, "knocked out ones do not");
     }
-  };
+  }
 
   t.ok(trn.score(trn.matches[3].id, [2,1]), "score match 3");
   t.equal(Masters.idString(trn.matches[3].id), "R4", "match 3 id");
@@ -56,11 +54,11 @@ test("chairs 5", function (t) {
   t.deepEqual(trn2.matches, trn.matches, "matches same");
 
   var res = [
-    {"seed" : 1, "wins" : 4, "pos" : 1, "for" : 5+4+3+2},
-    {"seed" : 2, "wins" : 3, "pos" : 2, "for" : 4+3+2+1},
-    {"seed" : 3, "wins" : 2, "pos" : 3, "for" : 3+2+1},
-    {"seed" : 4, "wins" : 1, "pos" : 4, "for" : 2+1},
-    {"seed" : 5, "wins" : 0, "pos" : 5, "for" : 1}
+    { seed : 1, wins : 4, pos : 1, against: 0,       for : 5+4+3+2 },
+    { seed : 2, wins : 3, pos : 2, against: 1+1+1+1, for : 4+3+2+1 },
+    { seed : 3, wins : 2, pos : 3, against: 2+2+2,   for : 3+2+1 },
+    { seed : 4, wins : 1, pos : 4, against: 3+3,     for : 2+1 },
+    { seed : 5, wins : 0, pos : 5, against: 4,       for : 1 }
   ];
 
   t.deepEqual(trn.results(), res, "results expected");
