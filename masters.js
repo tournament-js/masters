@@ -17,34 +17,6 @@ var makeMatches = function (np, kos) {
 };
 
 //------------------------------------------------------------------
-// positioning helper
-//------------------------------------------------------------------
-
-var matchTieCompute = function (slice, startIdx, cb) {
-  var pos = startIdx
-    , ties = 0
-    , scr = -Infinity;
-
-  // loop over players in order of their score
-  for (var k = 0; k < slice.length; k += 1) {
-    var pair = slice[k]
-      , p = pair[0]
-      , s = pair[1];
-
-    // if this is a tie, pos is previous one, and next real pos must be incremented
-    if (scr === s) {
-      ties += 1;
-    }
-    else {
-      pos += 1 + ties; // if we tied, must also + that
-      ties = 0;
-    }
-    scr = s;
-    cb(p, pos); // user have to find resultEntry himself from seed
-  }
-};
-
-//------------------------------------------------------------------
 // Interface
 //------------------------------------------------------------------
 
@@ -94,7 +66,6 @@ Masters.idString = function (id) {
   return "R" + id.r; // always only one match per round
 };
 
-Masters.prototype._initResult = $.constant({ against: 0 });
 Masters.prototype._progress = function (match) {
   var ko = this.knockouts[match.id.r - 1] || 0;
   if (ko) {
@@ -136,7 +107,7 @@ Masters.prototype._stats = function (res, m) {
     // update positions
     var top = $.zip(m.p, m.m).sort(Base.compareZip);
     var startIdx = isFinal ? 0 : adv;
-    matchTieCompute(top.slice(startIdx), startIdx, function (p, pos) {
+    Base.matchTieCompute(top.slice(startIdx), startIdx, function (p, pos) {
       Base.resultEntry(res, p).pos = pos;
     });
 
