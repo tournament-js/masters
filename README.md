@@ -2,7 +2,7 @@
 [![Build Status](https://secure.travis-ci.org/clux/masters.png)](http://travis-ci.org/clux/masters)
 [![Dependency Status](https://david-dm.org/clux/masters.png)](https://david-dm.org/clux/masters)
 
-    Stability: 2 - Unstable
+    Stability: 2 - Stable
 
 ## Overview
 Masters tournaments consist of a pool of players, repeatedly fighting against each other and gradually reducing the number of players each round. We specify the number of players to knock out each round as an array of integers.
@@ -35,9 +35,9 @@ Like all tournament types, matches have an `id` object that contains three value
 
 ```js
 {
-  s: Number, // the bracket - always 1 TODO: remove?
+  s: Number, // the bracket - always 1 - only WB supported
   r: Number, // the round number in the current bracket
-  m: Number  // the match number - always 1, only one match per round TODO: remove?
+  m: Number  // the match number - always 1 - only single match rounds supported
 }
 ```
 
@@ -46,7 +46,7 @@ All the normal [Base class helper methods](https://github.com/clux/tournament/bl
 
 ```js
 var r1 = trn.findMatches({ r: 1 });
-// NB: equivalent to: trn.matches[0]
+// NB: equivalent to: [trn.matches[0]]
 
 var firstThreeRounds = trn.findMatchesRanged({}, { r: 3 });
 // NB: equivalent to: trn.matches.slice(0, 3)

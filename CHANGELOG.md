@@ -1,6 +1,8 @@
-0.4.3 / 2013-11-XX
+0.4.3 / 2013-11-13
 ==================
   * `results[i].against` added - measures sum(difference from winner)
+  * Interface with tournament@0.20.2 for common tieComputers
+  * Added an implementation that inherits from FFA for implementors help
 
 0.4.2 / 2013-11-06
 ==================
