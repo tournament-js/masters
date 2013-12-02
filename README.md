@@ -1,11 +1,12 @@
 # Masters tournaments
 [![Build Status](https://secure.travis-ci.org/clux/masters.png)](http://travis-ci.org/clux/masters)
 [![Dependency Status](https://david-dm.org/clux/masters.png)](https://david-dm.org/clux/masters)
-
-    Stability: 2 - Stable
+[![stable](http://hughsk.github.io/stability-badges/dist/stable.svg)](http://nodejs.org/api/documentation.html#documentation_stability_index)
 
 ## Overview
 Masters tournaments consist of a pool of players, repeatedly fighting against each other and gradually reducing the number of players each round. We specify the number of players to knock out each round as an array of integers.
+
+This tournament is a special case of an [FFA](https://npmjs.org/package/ffa) tournament but with the sizes set equal to the number of players in each round to ensure one match per round.
 
 ## Construction
 Simply specify the number of players and an array of numbers to knock out per rounds. The resulting tournament will have the same number of matches as that array's length + 1.
@@ -64,9 +65,6 @@ Masters allow for ties everywhere except between the first knocked out player an
 
 ## Special Methods
 None.
-
-## Caveats
-None. Maybe a note that this is technically a special case of FFA eliminations.
 
 ## License
 MIT-Licensed. See LICENSE file for details.
