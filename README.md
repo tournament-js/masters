@@ -1,7 +1,7 @@
 # Masters tournaments
 [![Build Status](https://secure.travis-ci.org/clux/masters.png)](http://travis-ci.org/clux/masters)
 [![Dependency Status](https://david-dm.org/clux/masters.png)](https://david-dm.org/clux/masters)
-[![stable](http://hughsk.github.io/stability-badges/dist/stable.svg)](http://nodejs.org/api/documentation.html#documentation_stability_index)
+[![unstable](http://hughsk.github.io/stability-badges/dist/unstable.svg)](http://nodejs.org/api/documentation.html#documentation_stability_index)
 
 ## Overview
 Masters tournaments consist of a pool of players, repeatedly fighting against each other and gradually reducing the number of players each round. We specify the number of players to knock out each round as an array of integers.
