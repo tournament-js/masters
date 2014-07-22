@@ -1,3 +1,7 @@
+0.5.1 / 2014-07-22?
+==================
+  * Documentation and coverage release
+
 0.5.0 / 2013-12-24
 ==================
   * Updated `tournament` to 0.21.0 so that `Masters` is an `EventEmitter`
