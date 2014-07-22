@@ -1,4 +1,4 @@
-0.5.1 / 2014-07-22?
+0.5.1 / 2014-07-22
 ==================
   * Documentation and coverage release
 
