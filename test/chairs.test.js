@@ -1,9 +1,7 @@
-var tap = require('tap')
-  , test = tap.test
-  , Base = require('tournament')
+var Base = require('tournament')
   , Masters = require('../');
 
-test("invalid", function (t) {
+exports.invalid = function (t) {
   for (var i = 0; i < 10; i += 1) {
     var reason = Masters.invalid(i);
     if (i >= 3) {
@@ -15,10 +13,10 @@ test("invalid", function (t) {
       t.ok(reason, "illegal to create Masters with " + i + " players");
     }
   }
-  t.end();
-});
+  t.done();
+};
 
-test("chairs 5", function (t) {
+exports.chairs = function (t) {
   var trn = new Masters(5);
   t.ok(!trn.isDone(), "!isDone r0");
 
@@ -64,5 +62,5 @@ test("chairs 5", function (t) {
   t.deepEqual(trn.results(), res, "results expected");
   t.deepEqual(trn2.results(), res, "same as if serialized first");
 
-  t.end();
-});
+  t.done();
+};

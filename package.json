@@ -9,21 +9,26 @@
   },
   "keywords": [
     "knockout",
-    "masters",
     "elimination",
     "repeat",
-    "master-chef"
+    "tournament",
+    "masterchef"
   ],
   "main": "masters.js",
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "$(npm bin)/nodeunit --reporter=verbose test/*.js",
+    "instrument": "$(npm bin)/jscoverage lib",
+    "coverage": "MASTERS_COV=1 $(npm bin)/nodeunit --reporter=lcov test/*.js",
+    "coveralls": "npm run coverage | coveralls"
   },
   "dependencies": {
     "interlude": "~1.0.2",
     "tournament": "~0.21.0"
   },
   "devDependencies": {
-    "tap": "~0.4.4"
+    "nodeunit": "^0.9.0",
+    "jscoverage": "^0.5.5",
+    "coveralls": "^2.11.1"
   },
   "bugs": {
     "url": "http://github.com/clux/masters/issues"

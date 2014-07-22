@@ -1,10 +1,10 @@
-var tap = require('tap')
-  , test = tap.test
-  , $ = require('interlude')
+var $ = require('interlude')
   , Masters = require('../')
   , rep = Masters.idString;
 
-test("ko 10 [2,4,2] serialize", function (t) {
+// these tests all cover a simple 10 [2,4,2] setup
+
+exports.serialize = function (t) {
   var kos = [2,4,2];
   var opts = { knockouts: kos };
   t.ok(!Masters.invalid(10, opts), "10 kos not invalid");
@@ -19,11 +19,10 @@ test("ko 10 [2,4,2] serialize", function (t) {
     t.ok(ko.score(m.id, $.range(m.p.length).reverse()), "score " + rep(m.id));
     t.ok(m.m, "score worked");
   }
-  t.end();
-});
+  t.done();
+};
 
-// detailed simple knockout
-test("ko 10 [2,4,2]", function (t) {
+exports.score = function (t) {
   var kos = [2,4,2];
   var opts = { knockouts: kos };
   var ko = new Masters(10, opts)
@@ -63,7 +62,6 @@ test("ko 10 [2,4,2]", function (t) {
 
     leftover -= k; // only this many left for next round
   });
-
   // now all matches should have players
   leftover = 10;
   ms.forEach(function (m, i) {
@@ -71,10 +69,10 @@ test("ko 10 [2,4,2]", function (t) {
     leftover -= kos[i];
   });
 
-  t.end();
-});
+  t.done();
+};
 
-test("ko 10 [2,4,2] results", function (t) {
+exports.results = function (t) {
   var kos = [2,4,2];
   var opts = { knockouts: kos };
   var ko = new Masters(10, opts);
@@ -100,6 +98,7 @@ test("ko 10 [2,4,2] results", function (t) {
   var failScores = [10,9,8,7,6,5,4,3,3,1]; // ties at border
   t.equal(ko.unscorable({s:1, r:1, m:1}, $.range(10)), null, "can score r" + 1);
   t.ok(ko.unscorable({s:1, r:1, m:1}, failScores), "must cleanup losers in r" + 1);
+  // NB: this prints to console..
   t.ok(!ko.score({s:1, r:1, m:1}, failScores), "must cleanup losers in r" + 1);
 
   // score so last 2 tie
@@ -133,6 +132,7 @@ test("ko 10 [2,4,2] results", function (t) {
 
   // round 2
   failScores = [8,7,6,5,5,3,2,1]; // wont work cant distinguish losers/winners
+  // NB: this prints to console..
   t.ok(!ko.score({s:1, r:2, m:1}, failScores), "must cleanup losers in r" + 2);
 
   // score so 6th 7th tie
@@ -232,5 +232,5 @@ test("ko 10 [2,4,2] results", function (t) {
     t.ok(!up, "no upcoming match for " + n);
   });
 
-  t.end();
-});
+  t.done();
+};
