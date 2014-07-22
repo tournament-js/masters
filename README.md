@@ -1,7 +1,9 @@
 # Masters tournaments
-[![Build Status](https://secure.travis-ci.org/clux/masters.png)](http://travis-ci.org/clux/masters)
-[![Dependency Status](https://david-dm.org/clux/masters.png)](https://david-dm.org/clux/masters)
-[![unstable](http://hughsk.github.io/stability-badges/dist/unstable.svg)](http://nodejs.org/api/documentation.html#documentation_stability_index)
+[![npm status](http://img.shields.io/npm/v/masters.svg)](https://www.npmjs.org/package/masters)
+[![build status](https://secure.travis-ci.org/clux/masters.svg)](http://travis-ci.org/clux/masters)
+[![dependency status](https://david-dm.org/clux/masters.svg)](https://david-dm.org/clux/masters)
+[![coverage status](http://img.shields.io/coveralls/clux/masters.svg)](https://coveralls.io/r/clux/masters)
+[![unstable](http://img.shields.io/badge/stability-unstable-E5AE13.svg)](http://nodejs.org/api/documentation.html#documentation_stability_index)
 
 ## Overview
 Masters tournaments consist of a pool of players, repeatedly fighting against each other and gradually reducing the number of players each round. We specify the number of players to knock out each round as an array of integers.
