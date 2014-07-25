@@ -1,5 +1,5 @@
 var $ = require('interlude')
-  , Masters = require('../')
+  , Masters = require(process.env.MASTERS_COV ? '../masters-cov.js' : '../')
   , rep = Masters.idString;
 
 // these tests all cover a simple 10 [2,4,2] setup

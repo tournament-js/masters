@@ -1,5 +1,5 @@
 var Base = require('tournament')
-  , Masters = require('../');
+  , Masters = require(process.env.MASTERS_COV ? '../masters-cov.js' : '../');
 
 exports.invalid = function (t) {
   for (var i = 0; i < 10; i += 1) {

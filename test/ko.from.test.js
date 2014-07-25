@@ -1,5 +1,5 @@
 var $ = require('interlude')
-  , KO = require('../');
+  , KO = require(process.env.MASTERS_COV ? '../masters-cov.js' : '../');
 
 exports.from = function (t) {
   var k1 = new KO(16, { knockouts: [] });
