@@ -10,13 +10,25 @@ var Base = require('tournament')
  * Because Masters is the simplest tournament type, we have intentionally
  * left the dependency free version, as the actual entry point.
  *
- * Having said that, changing the entry point will still cause all
- * tests to run.
+ * Having said that, changing the entry point will cause all tests to pass.
  **/
-
-//------------------------------------------------------------------
+ //------------------------------------------------------------------
 // Interface
 //------------------------------------------------------------------
+
+function Id(r) {
+  this.s = 1;
+  this.r = r;
+  this.m = 1;
+}
+Id.prototype.toString = function () {
+  return "R" + this.r;
+};
+
+var idReplace = function (match) {
+  match.id = new Id(match.id.r); // throw away the old id
+};
+
 
 var Masters = FFA.sub('Masters', function (opts, initParent) {
   this.knockouts = opts.knockouts;
@@ -32,6 +44,7 @@ var Masters = FFA.sub('Masters', function (opts, initParent) {
   sizes.push(leftover);
 
   initParent({ advancers: advs, sizes: sizes });
+  this.matches.forEach(idReplace); // override toString from ffa's ids
 });
 
 var makeDefaultKos = function (np) {
@@ -70,10 +83,6 @@ Masters.configure({
     return null;
   }
 });
-
-Masters.idString = function (id) {
-  return "R" + id.r; // always only one match per round
-};
 
 Masters.prototype._sort = function (res) {
   var ffaRes = FFA.prototype._sort.call(this, res);
