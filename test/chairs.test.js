@@ -21,15 +21,15 @@ exports.chairs = function (t) {
   t.ok(!trn.isDone(), "!isDone r0");
 
   t.ok(trn.score(trn.matches[0].id, [5,4,3,2,1]), "score match 0");
-  t.equal(Masters.idString(trn.matches[0].id), "R1", "match 0 id");
+  t.equal(trn.matches[0].id.toString(), "R1", "match 0 id");
   t.ok(!trn.isDone(), "!isDone r1");
 
   t.ok(trn.score(trn.matches[1].id, [4,3,2,1]), "score match 1");
-  t.equal(Masters.idString(trn.matches[1].id), "R2", "match 1 id");
+  t.equal(trn.matches[1].id.toString(), "R2", "match 1 id");
   t.ok(!trn.isDone(), "!isDone r2");
 
   t.ok(trn.score(trn.matches[2].id, [3,2,1]), "score match 2");
-  t.equal(Masters.idString(trn.matches[2].id), "R3", "match 2 id");
+  t.equal(trn.matches[2].id.toString(), "R3", "match 2 id");
   t.ok(!trn.isDone(), "!isDone r3");
 
   for (var i = 1; i < 5; i += 1) {
@@ -42,7 +42,7 @@ exports.chairs = function (t) {
   }
 
   t.ok(trn.score(trn.matches[3].id, [2,1]), "score match 3");
-  t.equal(Masters.idString(trn.matches[3].id), "R4", "match 3 id");
+  t.equal(trn.matches[3].id.toString(), "R4", "match 3 id");
   t.ok(trn.isDone(), "isDone r4");
 
   var ser = trn + '';

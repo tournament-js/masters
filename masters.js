@@ -1,17 +1,31 @@
 var Base = require('tournament')
   , $ = require('interlude');
 
+function Id(r) {
+  this.s = 1;
+  this.r = r;
+  this.m = 1;
+}
+
+Id.prototype.toString = function () {
+  return "R" + this.r; // always only one match per round
+};
+
+var mId = function (r) {
+  return new Id(r);
+};
+
 //------------------------------------------------------------------
 // init helpers
 //------------------------------------------------------------------
 
 var makeMatches = function (np, kos) {
   var ms = [];
-  ms.push({ id: { s: 1, r: 1, m: 1 }, p: $.range(np) });
+  ms.push({ id: mId(1), p: $.range(np) });
   for (var i = 0; i < kos.length; i += 1) {
     // create the next round from current ko parameter
     np -= kos[i];
-    ms.push({ id: { s: 1, r: i+2, m: 1 }, p: $.replicate(np, Base.NONE) });
+    ms.push({ id: mId(i+2), p: $.replicate(np, Base.NONE) });
   }
   return ms;
 };
@@ -62,23 +76,19 @@ Masters.configure({
   }
 });
 
-Masters.idString = function (id) {
-  return "R" + id.r; // always only one match per round
-};
-
 Masters.prototype._progress = function (match) {
   var ko = this.knockouts[match.id.r - 1] || 0;
   if (ko) {
     // if more matches to play -> progress the top not knocked out
     var adv = match.p.length - ko;
     var top = Base.sorted(match).slice(0, adv);
-    var nextM = this.findMatch({s:1, r: match.id.r+1, m:1});
+    var nextM = this.findMatch(mId(match.id.r + 1));
 
     if (!nextM || top.length !== adv) { // sanity
       var str =  !nextM ?
         "next match not found in tournament":
         "less players than expected in round " + match.id.r+1;
-      throw new Error("corruption at " + this.rep(match.id) + ": " + str);
+      throw new Error("corruption at " + match.id + ": " + str);
     }
     // progress
     nextM.p = top;

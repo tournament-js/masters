@@ -1,6 +1,5 @@
 var $ = require('interlude')
-  , Masters = require(process.env.MASTERS_COV ? '../masters-cov.js' : '../')
-  , rep = Masters.idString;
+  , Masters = require(process.env.MASTERS_COV ? '../masters-cov.js' : '../');
 
 // these tests all cover a simple 10 [2,4,2] setup
 
@@ -16,7 +15,7 @@ exports.serialize = function (t) {
     t.deepEqual(ko.kos, konew.kos, "kos the same");
 
     var m = ko.matches[i];
-    t.ok(ko.score(m.id, $.range(m.p.length).reverse()), "score " + rep(m.id));
+    t.ok(ko.score(m.id, $.range(m.p.length).reverse()), "score " + m.id);
     t.ok(m.m, "score worked");
   }
   t.done();
@@ -39,7 +38,7 @@ exports.score = function (t) {
     var r = i+1;
     // remaining matches unscored
     ms.slice(r).forEach(function (m) {
-      t.equal($.nub(m.p).length, 1, "all NA in " + rep(m.id));
+      t.equal($.nub(m.p).length, 1, "all NA in " + m.id);
     });
 
     // ensure results match the current round
@@ -55,7 +54,7 @@ exports.score = function (t) {
 
     // score current round r (so that highest seed wins)
     var couldScore = ko.score(ms[i].id, $.range(leftover).reverse());
-    t.ok(couldScore, "could score " + rep(ms[i].id));
+    t.ok(couldScore, "could score " + ms[i].id);
 
     // check progression
     t.deepEqual(ms[i+1].p, $.range(leftover - k), k + " knocked out of " + leftover);
@@ -65,7 +64,7 @@ exports.score = function (t) {
   // now all matches should have players
   leftover = 10;
   ms.forEach(function (m, i) {
-    t.deepEqual(m.p, $.range(leftover), leftover + " players in" + rep(m.id));
+    t.deepEqual(m.p, $.range(leftover), leftover + " players in" + m.id);
     leftover -= kos[i];
   });
 

@@ -1,3 +1,9 @@
+1.0.0 / 2014-09-03
+==================
+  * Remove `idString` but provide a `toString` function for match ids natively
+  * Remove hidden `::rep` from prototype
+  * Bump to tournament 1.0.0
+
 0.5.1 / 2014-07-22
 ==================
   * Documentation and coverage release
