@@ -2,7 +2,7 @@
   "name": "masters",
   "description": "Repeat elimination tournaments",
   "author": "Eirik Albrigtsen <analsandblaster@gmail.com>",
-  "version": "0.5.1",
+  "version": "1.0.0",
   "stability": "unstable",
   "repository": {
     "type": "git",
