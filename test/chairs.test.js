@@ -34,10 +34,10 @@ exports.chairs = function (t) {
 
   for (var i = 1; i < 5; i += 1) {
     if (i <= 2) {
-      t.deepEqual(trn.upcoming(i), {s:1,r:4,m:1}, "players still left play");
+      t.deepEqual(trn.upcoming(i)[0].id, {s:1,r:4,m:1}, "players still left play");
     }
     else {
-      t.equal(trn.upcoming(i), undefined, "knocked out ones do not");
+      t.equal(trn.upcoming(i).length, 0, "knocked out ones do not");
     }
   }
 

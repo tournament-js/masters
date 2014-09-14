@@ -1,3 +1,7 @@
+2.0.0 / 2014-09-14
+==================
+  * **BREAKING** Bump tournament to 2.0.0 for more sensible `Tournament::upcoming`
+
 1.0.0 / 2014-09-03
 ==================
   * Remove `idString` but provide a `toString` function for match ids natively

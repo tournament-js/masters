@@ -88,8 +88,8 @@ exports.results = function (t) {
   });
   $.range(10).forEach(function (n) {
     var up = ko.upcoming(n);
-    t.ok(up, n + " has an upcoming match");
-    t.deepEqual(up, {s:1, r:1, m:1}, "it's match in r" + 1);
+    t.ok(up.length, n + " has an upcoming match");
+    t.deepEqual(up[0].id, {s:1, r:1, m:1}, "it's match in r" + 1);
   });
 
 
@@ -120,11 +120,11 @@ exports.results = function (t) {
   $.range(10).forEach(function (n) {
     var up = ko.upcoming(n);
     if (n <= 8) {
-      t.ok(up, n + " has an upcoming match");
-      t.deepEqual(up, {s:1, r:2, m:1}, "it's match in r" + 2);
+      t.ok(up.length, n + " has an upcoming match");
+      t.deepEqual(up[0].id, {s:1, r:2, m:1}, "it's match in r" + 2);
     }
     else {
-      t.ok(!up, "no upcoming match for " + n);
+      t.ok(!up.length, "no upcoming match for " + n);
     }
   });
 
@@ -173,11 +173,11 @@ exports.results = function (t) {
   $.range(10).forEach(function (n) {
     var up = ko.upcoming(n);
     if (n <= 4) {
-      t.ok(up, n + " has an upcoming match");
-      t.deepEqual(up, {s:1, r:3, m:1}, "it's match in r" + 3);
+      t.ok(up.length, n + " has an upcoming match");
+      t.deepEqual(up[0].id, {s:1, r:3, m:1}, "it's match in r" + 3);
     }
     else {
-      t.ok(!up, "no upcoming match for " + n);
+      t.ok(!up.length, "no upcoming match for " + n);
     }
   });
 
@@ -200,11 +200,11 @@ exports.results = function (t) {
   $.range(10).forEach(function (n) {
     var up = ko.upcoming(n);
     if (n <= 2) {
-      t.ok(up, n + " has an upcoming match");
-      t.deepEqual(up, {s:1, r:4, m:1}, "it's match in r" + 4);
+      t.ok(up.length, n + " has an upcoming match");
+      t.deepEqual(up[0].id, {s:1, r:4, m:1}, "it's match in r" + 4);
     }
     else {
-      t.ok(!up, "no upcoming match for " + n);
+      t.ok(!up.length, "no upcoming match for " + n);
     }
   });
 
@@ -228,7 +228,7 @@ exports.results = function (t) {
 
   $.range(10).forEach(function (n) {
     var up = ko.upcoming(n);
-    t.ok(!up, "no upcoming match for " + n);
+    t.ok(!up.length, "no upcoming match for " + n);
   });
 
   t.done();
