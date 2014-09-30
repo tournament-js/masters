@@ -22,8 +22,8 @@
     "coveralls": "npm run coverage | coveralls"
   },
   "dependencies": {
-    "interlude": "^1.0.2",
-    "tournament": "^2.0.0"
+    "interlude": "^1.1.0",
+    "tournament": "^2.0.1"
   },
   "devDependencies": {
     "nodeunit": "^0.9.0",
