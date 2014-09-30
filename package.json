@@ -26,6 +26,7 @@
     "tournament": "^2.0.1"
   },
   "devDependencies": {
+    "ffa": "^2.0.1",
     "nodeunit": "^0.9.0",
     "jscoverage": "^0.5.5",
     "coveralls": "^2.11.1"
