@@ -77,26 +77,18 @@ Masters.configure({
 });
 
 Masters.prototype._progress = function (match) {
-  var ko = this.knockouts[match.id.r - 1] || 0;
+  var ko = this.knockouts[match.id.r - 1];
   if (ko) {
     // if more matches to play -> progress the top not knocked out
     var adv = match.p.length - ko;
     var top = Base.sorted(match).slice(0, adv);
-    var nextM = this.findMatch(mId(match.id.r + 1));
-
-    if (!nextM || top.length !== adv) { // sanity
-      var str =  !nextM ?
-        "next match not found in tournament":
-        "less players than expected in round " + match.id.r+1;
-      throw new Error("corruption at " + match.id + ": " + str);
-    }
-    // progress
-    nextM.p = top;
+    var next = this.findMatch(mId(match.id.r + 1));
+    next.p = top;
   }
 };
 
 Masters.prototype._verify = function (match, score) {
-  var ko = this.knockouts[match.id.r - 1] || 0;
+  var ko = this.knockouts[match.id.r - 1] | 0;
   var adv = match.p.length - ko;
   if (ko > 0 && score[adv-1] === score[adv]) {
     return "scores must unambiguous decide who is in the top " + adv;
@@ -115,9 +107,9 @@ Masters.prototype._stats = function (res, m) {
     Base.resultEntry(res, s).pos = m.p.length; // tie them all
   });
   if (m.m) {
-    var ko = this.knockouts[m.id.r-1];
-    var adv = m.p.length - (ko || 0);
-    var isFinal = (ko == null);
+    var ko = this.knockouts[m.id.r-1] | 0;
+    var adv = m.p.length - ko;
+    var isFinal = (!ko);
 
     // update positions
     var top = $.zip(m.p, m.m).sort(Base.compareZip);
