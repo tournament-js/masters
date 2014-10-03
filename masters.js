@@ -104,6 +104,11 @@ Masters.prototype._verify = function (match, score) {
   return null;
 };
 
+Masters.prototype._safe = function (match) {
+  var next = this.findMatch({ s: 1, r: match.id.r + 1, m: 1 });
+  return next && !Array.isArray(next.m);
+};
+
 Masters.prototype._stats = function (res, m) {
   // handle players that have reached the match
   m.p.filter($.gt(0)).forEach(function (s) {

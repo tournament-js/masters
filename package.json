@@ -23,10 +23,10 @@
   },
   "dependencies": {
     "interlude": "^1.1.0",
-    "tournament": "^2.0.1"
+    "tournament": "^2.2.0"
   },
   "devDependencies": {
-    "ffa": "^2.0.1",
+    "ffa": "^2.1.0",
     "nodeunit": "^0.9.0",
     "jscoverage": "^0.5.5",
     "coveralls": "^2.11.1"

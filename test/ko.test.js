@@ -36,31 +36,26 @@ exports.score = function (t) {
   var leftover = 10;
   kos.forEach(function (k, i) {
     var r = i+1;
-    // remaining matches unscored
-    ms.slice(r).forEach(function (m) {
+    // matches in round > r have no players yet
+    ko.findMatchesRanged({ r: r + 1 }).forEach(function (m) {
       t.equal($.nub(m.p).length, 1, "all NA in " + m.id);
-    });
-
-    // ensure results match the current round
-    //var res = ko.results();
-    //t.ok(res, "can get results");
-    //t.equal(res.lenght, 10, "all players have results");
-
-    // is ONLY current match scorable?
-    ms.forEach(function (m) {
-      var reason = ko.unscorable(m.id, $.range(m.p.length));
-      t.equal(reason === null, m.id.r === r, "can score iff r==" + r);
     });
 
     // score current round r (so that highest seed wins)
     var couldScore = ko.score(ms[i].id, $.range(leftover).reverse());
     t.ok(couldScore, "could score " + ms[i].id);
-
     // check progression
     t.deepEqual(ms[i+1].p, $.range(leftover - k), k + " knocked out of " + leftover);
 
+    // matches in round < r cannot be rescored (because r was scored)
+    ko.findMatchesRanged({}, {r: r-1}).forEach(function (m) {
+      var reason = ko.unscorable(m.id, $.range(m.p.length));
+      t.equal(reason, m.id + " cannot be re-scored", 'cannot rescore past ' + m.id);
+    });
+
     leftover -= k; // only this many left for next round
   });
+
   // now all matches should have players
   leftover = 10;
   ms.forEach(function (m, i) {
@@ -186,7 +181,6 @@ exports.results = function (t) {
   t.equal(kos[2], 2, "should only be 2 left after scoring r" + 3);
   t.equal(ko.unscorable({s:1,r:3,m:1}, [4,3,2,1]), null, "can score r" + 3);
   t.ok(ko.score({s:1,r:3,m:1}, [4,3,2,1]), "scored r" + 3);
-  t.ok(ko.unscorable({s:1,r:3,m:1}, [4,3,2,1]), "should not re-scored r" + 3);
   res = ko.results();
   t.ok(res, "we got results for r" + 3);
 
