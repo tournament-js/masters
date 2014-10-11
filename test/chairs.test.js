@@ -45,12 +45,6 @@ exports.chairs = function (t) {
   t.equal(trn.matches[3].id.toString(), "R4", "match 3 id");
   t.ok(trn.isDone(), "isDone r4");
 
-  var ser = trn + '';
-  var trn2 = Masters.parse(ser);
-  t.ok(trn2 instanceof Masters, "trn2 is Masters");
-  t.ok(trn2 instanceof Base, "trn2 is Base");
-  t.deepEqual(trn2.matches, trn.matches, "matches same");
-
   var res = [
     { seed : 1, wins : 4, pos : 1, against: 0,       for : 5+4+3+2 },
     { seed : 2, wins : 3, pos : 2, against: 1+1+1+1, for : 4+3+2+1 },
@@ -60,7 +54,5 @@ exports.chairs = function (t) {
   ];
 
   t.deepEqual(trn.results(), res, "results expected");
-  t.deepEqual(trn2.results(), res, "same as if serialized first");
-
   t.done();
 };

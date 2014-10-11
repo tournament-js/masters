@@ -2,25 +2,6 @@ var $ = require('interlude')
   , Masters = require(process.env.MASTERS_COV ? '../masters-cov.js' : '../');
 
 // these tests all cover a simple 10 [2,4,2] setup
-
-exports.serialize = function (t) {
-  var kos = [2,4,2];
-  var opts = { knockouts: kos };
-  t.ok(!Masters.invalid(10, opts), "10 kos not invalid");
-  var ko = new Masters(10, opts);
-
-  for (var i = 0; i < 4; i += 1) {
-    var konew = Masters.parse(ko + '');
-    t.deepEqual(ko.matches, konew.matches, "matches the same");
-    t.deepEqual(ko.kos, konew.kos, "kos the same");
-
-    var m = ko.matches[i];
-    t.ok(ko.score(m.id, $.range(m.p.length).reverse()), "score " + m.id);
-    t.ok(m.m, "score worked");
-  }
-  t.done();
-};
-
 exports.score = function (t) {
   var kos = [2,4,2];
   var opts = { knockouts: kos };
