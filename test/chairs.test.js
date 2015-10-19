@@ -1,7 +1,8 @@
 var Base = require('tournament')
-  , Masters = require('../');
+  , Masters = require('../')
+  , test = require('bandage');
 
-exports.invalid = function (t) {
+test('invalid', function T(t) {
   for (var i = 0; i < 10; i += 1) {
     var reason = Masters.invalid(i);
     if (i >= 3) {
@@ -13,10 +14,9 @@ exports.invalid = function (t) {
       t.ok(reason, 'illegal to create Masters with ' + i + ' players');
     }
   }
-  t.done();
-};
+});
 
-exports.chairs = function (t) {
+test('chairs', function T(t) {
   var trn = new Masters(5);
   t.ok(!trn.isDone(), '!isDone r0');
 
@@ -54,5 +54,4 @@ exports.chairs = function (t) {
   ];
 
   t.deepEqual(trn.results(), res, 'results expected');
-  t.done();
-};
+});

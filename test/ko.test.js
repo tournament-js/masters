@@ -1,8 +1,9 @@
 var $ = require('interlude')
-  , Masters = require('../');
+  , Masters = require('../')
+  , test = require('bandage');
 
 // these tests all cover a simple 10 [2,4,2] setup
-exports.score = function (t) {
+test('score', function (t) {
   var kos = [2,4,2];
   var opts = { knockouts: kos };
   var ko = new Masters(10, opts)
@@ -43,11 +44,9 @@ exports.score = function (t) {
     t.deepEqual(m.p, $.range(leftover), leftover + ' players in' + m.id);
     leftover -= kos[i];
   });
+});
 
-  t.done();
-};
-
-exports.results = function (t) {
+test('results', function (t) {
   var kos = [2,4,2];
   var opts = { knockouts: kos };
   var ko = new Masters(10, opts);
@@ -67,7 +66,6 @@ exports.results = function (t) {
     t.ok(up.length, n + ' has an upcoming match');
     t.deepEqual(up[0].id, {s: 1, r: 1, m: 1}, 'match is in r' + 1);
   });
-
 
   // round 1
   var failScores = [10,9,8,7,6,5,4,3,3,1]; // ties at border
@@ -103,7 +101,6 @@ exports.results = function (t) {
       t.ok(!up.length, 'no upcoming match for ' + n);
     }
   });
-
 
   // round 2
   failScores = [8,7,6,5,5,3,2,1]; // wont work cant distinguish losers/winners
@@ -156,7 +153,6 @@ exports.results = function (t) {
     }
   });
 
-
   // round 3
   t.equal(kos[2], 2, 'should only be 2 left after scoring r' + 3);
   t.equal(ko.unscorable({s: 1,r: 3,m: 1}, [4,3,2,1]), null, 'can score r' + 3);
@@ -182,7 +178,6 @@ exports.results = function (t) {
     }
   });
 
-
   // round 4
   t.ok(ko.score({s: 1,r: 4,m: 1}, [2,2]), 'scored r' + 4);
   res = ko.results();
@@ -204,6 +199,4 @@ exports.results = function (t) {
     var up = ko.upcoming(n);
     t.ok(!up.length, 'no upcoming match for ' + n);
   });
-
-  t.done();
-};
+});

@@ -1,7 +1,8 @@
 var $ = require('interlude')
-  , KO = require('../');
+  , KO = require('../')
+  , test = require('bandage');
 
-exports.from = function (t) {
+test('from', function T(t) {
   var k1 = new KO(16, { knockouts: [] });
   var m1 = k1.matches[0];
   t.deepEqual(m1.p, $.range(16), 'ascending order on m.p');
@@ -20,6 +21,4 @@ exports.from = function (t) {
 
   var k3 = KO.from(k2, 4);
   t.deepEqual(k3.players(), [13,14,15,16], 'top 4 progressed to k3');
-
-  t.done();
-};
+});
