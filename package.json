@@ -3,7 +3,6 @@
   "description": "Repeat elimination tournaments",
   "author": "Eirik Albrigtsen <analsandblaster@gmail.com>",
   "version": "3.0.0",
-  "stability": "stable",
   "repository": {
     "type": "git",
     "url": "clux/masters"
@@ -18,8 +17,8 @@
   "main": "masters.js",
   "scripts": {
     "test": "nodeunit --reporter=verbose test/*.js",
-    "coverage": "jscoverage masters.js && MASTERS_COV=1 nodeunit --reporter=lcov test/*.js",
-    "coveralls": "npm run coverage | coveralls"
+    "precoverage": "istanbul cover nodeunit -- test/*.js",
+    "coverage": "cat coverage/lcov.info && rm -rf coverage"
   },
   "dependencies": {
     "interlude": "^1.1.0",
@@ -28,7 +27,7 @@
   "devDependencies": {
     "ffa": "^3.0.0",
     "nodeunit": "^0.9.0",
-    "jscoverage": "^0.5.5",
+    "istanbul": "^0.4.0",
     "coveralls": "^2.11.1"
   },
   "bugs": {
