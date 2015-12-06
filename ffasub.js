@@ -11,7 +11,7 @@ var Base = require('tournament')
  * left the dependency free version, as the actual entry point.
  *
  * Having said that, changing the entry point will cause all tests to pass.
- **/
+ */
 // ------------------------------------------------------------------
 // Interface
 // ------------------------------------------------------------------
@@ -46,7 +46,7 @@ var Masters = FFA.sub('Masters', function (opts, initParent) {
   this.matches.forEach(idReplace); // override toString from ffa's ids
 });
 
-var makeDefaultKos = (np) => Array.from({length: np - 2}, i => 1);
+var makeDefaultKos = (np) => Array.from({length: np - 2}, () => 1);
 
 Masters.configure({
   defaults: function (np, opts) {
@@ -63,15 +63,16 @@ Masters.configure({
     if (!Array.isArray(kos) || !kos.every(Base.isInteger)) {
       return 'knockouts must be an array of positive integers';
     }
+    var ps = np;
     for (var i = 0; i < kos.length; i += 1) {
       var ko = kos[i];
       if (ko < 1) {
         return 'must knock out a positive number of players each round';
       }
-      if (np - ko <= 1) {
+      if (ps - ko <= 1) {
         return 'must leave at least two players in every match';
       }
-      np -= ko;
+      ps -= ko;
     }
     return null;
   }

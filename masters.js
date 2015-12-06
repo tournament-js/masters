@@ -22,10 +22,11 @@ var mId = function (r) {
 var makeMatches = function (np, kos) {
   var ms = [];
   ms.push({ id: mId(1), p: $.range(np) });
+  var ps = np;
   for (var i = 0; i < kos.length; i += 1) {
     // create the next round from current ko parameter
-    np -= kos[i];
-    ms.push({ id: mId(i+2), p: $.replicate(np, Base.NONE) });
+    ps -= kos[i];
+    ms.push({ id: mId(i+2), p: $.replicate(ps, Base.NONE) });
   }
   return ms;
 };
@@ -62,15 +63,16 @@ Masters.configure({
     if (!Array.isArray(kos) || !kos.every(Base.isInteger)) {
       return 'knockouts must be an array of positive integers';
     }
+    var ps = np;
     for (var i = 0; i < kos.length; i += 1) {
       var ko = kos[i];
       if (ko < 1) {
         return 'must knock out a positive number of players each round';
       }
-      if (np - ko <= 1) {
+      if (ps - ko <= 1) {
         return 'must leave at least two players in every match';
       }
-      np -= ko;
+      ps -= ko;
     }
     return null;
   }
