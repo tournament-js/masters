@@ -1,6 +1,7 @@
 3.1.0 / 2015-12-06
 ==================
   * Bump tournament to 3.1.1 for configurable logging
+  * Make ffasub a first class tested citizen
 
 3.0.0 / 2014-10-11
 ==================
