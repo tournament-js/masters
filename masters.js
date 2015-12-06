@@ -8,16 +8,16 @@ function Id(r) {
 }
 
 Id.prototype.toString = function () {
-  return "R" + this.r; // always only one match per round
+  return 'R' + this.r; // always only one match per round
 };
 
 var mId = function (r) {
   return new Id(r);
 };
 
-//------------------------------------------------------------------
+// ------------------------------------------------------------------
 // init helpers
-//------------------------------------------------------------------
+// ------------------------------------------------------------------
 
 var makeMatches = function (np, kos) {
   var ms = [];
@@ -30,9 +30,9 @@ var makeMatches = function (np, kos) {
   return ms;
 };
 
-//------------------------------------------------------------------
+// ------------------------------------------------------------------
 // Interface
-//------------------------------------------------------------------
+// ------------------------------------------------------------------
 
 var Masters = Base.sub('Masters', function (opts, initParent) {
   this.knockouts = opts.knockouts;
@@ -56,19 +56,19 @@ Masters.configure({
 
   invalid: function (np, opts) {
     if (np < 3) {
-      return "need at least 3 players";
+      return 'need at least 3 players';
     }
     var kos = opts.knockouts;
     if (!Array.isArray(kos) || !kos.every(Base.isInteger)) {
-      return "knockouts must be an array of positive integers";
+      return 'knockouts must be an array of positive integers';
     }
     for (var i = 0; i < kos.length; i += 1) {
       var ko = kos[i];
       if (ko < 1) {
-        return "must knock out a positive number of players each round";
+        return 'must knock out a positive number of players each round';
       }
       if (np - ko <= 1) {
-        return "must leave at least two players in every match";
+        return 'must leave at least two players in every match';
       }
       np -= ko;
     }
@@ -91,7 +91,7 @@ Masters.prototype._verify = function (match, score) {
   var ko = this.knockouts[match.id.r - 1] | 0;
   var adv = match.p.length - ko;
   if (ko > 0 && score[adv-1] === score[adv]) {
-    return "scores must unambiguous decide who is in the top " + adv;
+    return 'scores must unambiguous decide who is in the top ' + adv;
   }
   return null;
 };

@@ -12,9 +12,9 @@ var Base = require('tournament')
  *
  * Having said that, changing the entry point will cause all tests to pass.
  **/
- //------------------------------------------------------------------
+// ------------------------------------------------------------------
 // Interface
-//------------------------------------------------------------------
+// ------------------------------------------------------------------
 
 function Id(r) {
   this.s = 1;
@@ -22,13 +22,12 @@ function Id(r) {
   this.m = 1;
 }
 Id.prototype.toString = function () {
-  return "R" + this.r;
+  return 'R' + this.r;
 };
 
 var idReplace = function (match) {
   match.id = new Id(match.id.r); // throw away the old id
 };
-
 
 var Masters = FFA.sub('Masters', function (opts, initParent) {
   this.knockouts = opts.knockouts;
@@ -47,13 +46,7 @@ var Masters = FFA.sub('Masters', function (opts, initParent) {
   this.matches.forEach(idReplace); // override toString from ffa's ids
 });
 
-var makeDefaultKos = function (np) {
-  var kos = [];
-  for (var i = np; i > 2; i -= 1) {
-    kos.push(1);
-  }
-  return kos;
-};
+var makeDefaultKos = (np) => Array.from({length: np - 2}, i => 1);
 
 Masters.configure({
   defaults: function (np, opts) {
@@ -64,19 +57,19 @@ Masters.configure({
 
   invalid: function (np, opts) {
     if (np < 3) {
-      return "need at least 3 players";
+      return 'need at least 3 players';
     }
     var kos = opts.knockouts;
     if (!Array.isArray(kos) || !kos.every(Base.isInteger)) {
-      return "knockouts must be an array of positive integers";
+      return 'knockouts must be an array of positive integers';
     }
     for (var i = 0; i < kos.length; i += 1) {
       var ko = kos[i];
       if (ko < 1) {
-        return "must knock out a positive number of players each round";
+        return 'must knock out a positive number of players each round';
       }
       if (np - ko <= 1) {
-        return "must leave at least two players in every match";
+        return 'must leave at least two players in every match';
       }
       np -= ko;
     }
@@ -92,4 +85,5 @@ Masters.prototype._sort = function (res) {
   return ffaRes;
 };
 
+Masters.Id = Id;
 module.exports = Masters;
