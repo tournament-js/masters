@@ -9,8 +9,5 @@ notifications:
   email: false
 
 after_script:
-  - sed -i 's/masters.js/ffasub.js/' package.json
-  - npm test
-  - sed -i 's/ffasub.js/masters.js/' package.json
   - npm install coveralls
   - npm run coverage | coveralls

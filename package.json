@@ -16,7 +16,7 @@
   ],
   "main": "masters.js",
   "scripts": {
-    "test": "bndg test/*.js",
+    "test": "./test.sh",
     "precoverage": "istanbul cover bndg test/*.test.js",
     "coverage": "cat coverage/lcov.info && rm -rf coverage"
   },
