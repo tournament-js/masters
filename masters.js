@@ -133,4 +133,5 @@ Masters.prototype._stats = function (res, m) {
   return res;
 };
 
+Masters.Id = Id;
 module.exports = Masters;
