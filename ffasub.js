@@ -41,8 +41,12 @@ var Masters = FFA.sub('Masters', function (opts, initParent) {
     leftover -= ko;
   }
   sizes.push(leftover);
+  var subopts = { advancers: advs, sizes: sizes };
+  if (opts.log) {
+    subopts.log = opts.log;
+  }
 
-  initParent({ advancers: advs, sizes: sizes });
+  initParent(subopts);
   this.matches.forEach(idReplace); // override toString from ffa's ids
 });
 
