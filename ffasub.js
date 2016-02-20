@@ -1,6 +1,5 @@
-var Base = require('tournament')
-  , FFA = require('ffa')
-  , $ = require('interlude');
+var Base = require('tournament');
+var FFA = require('ffa');
 
 /**
  * This is an implementation of Masters that inherits from FFA.
